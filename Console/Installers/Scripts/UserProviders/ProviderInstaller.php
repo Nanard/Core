@@ -8,9 +8,6 @@ use Illuminate\Filesystem\Filesystem;
 use Modules\Core\Console\Installers\SetupScript;
 use Modules\Core\Providers\CoreServiceProvider;
 use Modules\Core\Services\Composer;
-use Modules\User\Contracts\Authentication;
-use Modules\User\Repositories\RoleRepository;
-use Modules\User\Repositories\UserRepository;
 
 abstract class ProviderInstaller implements SetupScript
 {
@@ -159,18 +156,6 @@ abstract class ProviderInstaller implements SetupScript
      */
     protected function bindUserRepositoryOnTheFly($driver)
     {
-        $this->application->bind(
-            UserRepository::class,
-            "Modules\\User\\Repositories\\$driver\\{$driver}UserRepository"
-        );
-        $this->application->bind(
-            RoleRepository::class,
-            "Modules\\User\\Repositories\\$driver\\{$driver}RoleRepository"
-        );
-        $this->application->bind(
-            Authentication::class,
-            "Modules\\User\\Repositories\\$driver\\{$driver}Authentication"
-        );
     }
 
     /**
@@ -186,9 +171,6 @@ abstract class ProviderInstaller implements SetupScript
                 $this->askForPassword()
             ),
         ];
-
-        $user = $this->application->make(UserRepository::class)->createWithRolesFromCli($info, [1], true);
-        $this->application->make(\Modules\User\Repositories\UserTokenRepository::class)->generateFor($user->id);
 
         $this->command->info('Please wait while the admin account is configured...');
     }

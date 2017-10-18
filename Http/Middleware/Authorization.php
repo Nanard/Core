@@ -4,7 +4,6 @@ namespace Modules\Core\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Modules\User\Contracts\Authentication;
 
 /**
  * Class Authorization
@@ -14,17 +13,10 @@ use Modules\User\Contracts\Authentication;
 class Authorization
 {
     /**
-     * @var Authentication
      */
-    private $auth;
-
-    /**
-     * Authorization constructor.
-     * @param Authentication $auth
-     */
-    public function __construct(Authentication $auth)
+    public function __construct()
     {
-        $this->auth = $auth;
+
     }
 
     /**
@@ -35,10 +27,6 @@ class Authorization
      */
     public function handle($request, \Closure $next, $permission)
     {
-        if ($this->auth->hasAccess($permission) === false) {
-            return $this->handleUnauthorizedRequest($request, $permission);
-        }
-
         return $next($request);
     }
 
@@ -52,11 +40,5 @@ class Authorization
         if ($request->ajax()) {
             return response('Unauthorized.', Response::HTTP_FORBIDDEN);
         }
-        if ($request->user() === null) {
-            return redirect()->guest('auth/login');
-        }
-
-        return redirect()->back()
-            ->withError(trans('core::core.permission denied', ['permission' => $permission]));
     }
 }

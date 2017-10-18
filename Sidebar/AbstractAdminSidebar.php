@@ -5,23 +5,15 @@ namespace Modules\Core\Sidebar;
 use Maatwebsite\Sidebar\Menu;
 use Maatwebsite\Sidebar\SidebarExtender;
 use Modules\Core\Events\BuildingSidebar;
-use Modules\User\Contracts\Authentication;
 
 abstract class AbstractAdminSidebar implements SidebarExtender
 {
     /**
-     * @var Authentication
-     */
-    protected $auth;
-
-    /**
-     * @param Authentication $auth
      *
      * @internal param Guard $guard
      */
-    public function __construct(Authentication $auth)
+    public function __construct()
     {
-        $this->auth = $auth;
     }
 
     public function handle(BuildingSidebar $sidebar)

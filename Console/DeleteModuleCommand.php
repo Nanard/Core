@@ -4,7 +4,6 @@ namespace Modules\Core\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Modules\User\Permissions\PermissionsRemover;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -80,8 +79,6 @@ class DeleteModuleCommand extends Command
 
     private function removePermissionsFor($module)
     {
-        (new PermissionsRemover($module))->removeAll();
-
         $this->info("All permissions for [$module] have been removed");
     }
 

@@ -4,26 +4,19 @@ namespace Modules\Core\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
-use Modules\User\Contracts\Authentication;
 
 class PermissionMiddleware
 {
-    /**
-     * @var Authentication
-     */
-    private $auth;
     /**
      * @var Route
      */
     private $route;
 
     /**
-     * @param Authentication $auth
      * @param Route          $route
      */
-    public function __construct(Authentication $auth, Route $route)
+    public function __construct(Route $route)
     {
-        $this->auth = $auth;
         $this->route = $route;
     }
 
@@ -34,18 +27,6 @@ class PermissionMiddleware
      */
     public function handle(Request $request, \Closure $next)
     {
-        $action = $this->route->getActionName();
-        $actionMethod = substr($action, strpos($action, "@") + 1);
-
-        $segmentPosition = $this->getSegmentPosition($request);
-        $moduleName = $this->getModuleName($request, $segmentPosition);
-        $entityName = $this->getEntityName($request, $segmentPosition);
-        $permission = $this->getPermission($moduleName, $entityName, $actionMethod);
-
-        if (!$this->auth->hasAccess($permission)) {
-            return redirect()->back()->withError(trans('core::core.permission denied', ['permission' => $permission]));
-        }
-
         return $next($request);
     }
 
